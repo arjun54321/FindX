@@ -43,20 +43,28 @@ app.get('/home/:queryString/:questionCount', function(req, res){
             languageTranslator.translate(translateParams)
             .then(translationResult => {
                 var queryString = translationResult.result.translations[0].translation;
-                res.json(queryString);
-                searchQuery.stackExchange(queryString, questionCount);
+                searchQuery.stackExchange(queryString, questionCount, function(result) {
+                    res.status(200).json({
+                        status: 'succes',
+                        data: result,
+                    })
+                });
             })
             .catch(err => {
-                res.json('error:', err);
+                res.sendStatus('error:', err)
             });
         }
         else {
-            res.json(queryString);
-            searchQuery.stackExchange(queryString, questionCount);
+            searchQuery.stackExchange(queryString, questionCount, function(result) {
+                res.status(200).json({
+                    status: 'succes',
+                    data: result,
+                })
+            });
         }
     })
     .catch(err => {
-        res.json('error:', err);
+        res.sendStatus('error:', err)
     });
 })
 
