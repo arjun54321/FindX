@@ -24,6 +24,7 @@
     "ibm-watson": "^6.0.2",
     "langs": "^2.0.0",
     "request-promise": "^4.2.6",
+    "sentiment": "^5.0.2",
     "stackexchange": "^1.2.2",
     "uuidv4": "^6.2.6",
     "zlib": "^1.0.5"
