@@ -37,6 +37,7 @@ class searchQueryHelper {
     var actualTags = [];
     var answers_per_question = [];
     var currentLink = 0;
+
     questionData["items"].forEach(function (item, index) {
       if (!item["is_answered"] || item["score"] < 0) {
         // pass
@@ -60,6 +61,10 @@ class searchQueryHelper {
     var test = [];
     var len = Math.max(...answers_per_question);
     var itemsProcessed = 0;
+
+
+    // My function
+   const myfunction = async function() {
     questionID.forEach(function (item, index) {
       itemsProcessed++;
       self.getStackExchangeQuestionById(item, function (result) {
@@ -73,24 +78,31 @@ class searchQueryHelper {
             // Get Comments Body.......
             for (var j = 0; j < result.items[i].comment_count; j++) {
               comments_body.push(result.items[i]["comments"][j]["body"]);
+
             }
           } else {
             console.log("Not Defined");
           }
         }
-        console.log(answer_id);
+        
+          return answer_id;
+       
       });
-      console.log("Helooooooooo.........");
+      // console.log('myfunction', answer_id);
+      
+   
     });
-    // Promise.all([comments_count]).then((values) => {
-    //   console.log(values);
-    // });
+     
   }
-
-  testing(x) {
-    console.log(x);
+    // Start function
+    const start = async function() {
+      const result = await myfunction();
+      
+      console.log(result);
+    }
+ start();
   }
-
+ 
   getStackExchangeQuestionById(questionID, callback) {
     var stackOverflowQuestion =
       "https://api.stackexchange.com/2.2/questions/" +
