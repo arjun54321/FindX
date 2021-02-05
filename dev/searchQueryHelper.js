@@ -4,7 +4,7 @@ var sentiment = new Sentiment();
 const Auth_key = "36MG*PWxNRuR2IurlPc8vg((";
 class searchQueryHelper {
   stackExchange(queryString, questionCount, callback) {
-    var page_size = parseInt(questionCount) + 0;
+    var page_size = parseInt(questionCount) + 10;
     const query = queryString.toString();
     var stackOverflowUserURL =
       "https://api.stackexchange.com/2.2/similar?key=" +
