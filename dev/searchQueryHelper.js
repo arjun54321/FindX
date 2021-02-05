@@ -38,6 +38,11 @@ class searchQueryHelper {
     var questionTitle = [];
     var actualTags = [];
     var answers_per_question = [];
+<<<<<<< HEAD
+=======
+    var currentLink = 0;
+
+>>>>>>> da8ce74767e4bcbc5cedcef431f6250118f5e9d2
     questionData["items"].forEach(function (item, index) {
       if (!item["is_answered"] || item["score"] < 0) {
         // pass
@@ -58,7 +63,19 @@ class searchQueryHelper {
     var answer_accepted = [];
     var score_answer = [];
     var auth_repo = [];
+<<<<<<< HEAD
     questionID.forEach(async function (item, index) {
+=======
+    var test = [];
+    var len = Math.max(...answers_per_question);
+    var itemsProcessed = 0;
+
+
+    // My function
+   const myfunction = async function() {
+    questionID.forEach(function (item, index) {
+      itemsProcessed++;
+>>>>>>> da8ce74767e4bcbc5cedcef431f6250118f5e9d2
       self.getStackExchangeQuestionById(item, function (result) {
         for (var i = 0; i < answers_per_question[index]; i++) {
           if (typeof result.items[i] !== "undefined") {
@@ -70,6 +87,7 @@ class searchQueryHelper {
             // Get Comments Body.......
             for (var j = 0; j < result.items[i].comment_count; j++) {
               comments_body.push(result.items[i]["comments"][j]["body"]);
+
             }
           } else {
             console.log("Not Defined");
