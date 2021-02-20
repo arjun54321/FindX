@@ -1,32 +1,28 @@
 {
-  "name": "findx",
+  "name": "blockchain",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "node_1": "nodemon --watch dev -e js dev/networkNode.js 3001 http://localhost:3001",
+    "node_2": "nodemon --watch dev -e js dev/networkNode.js 3002 http://localhost:3002",
+    "node_3": "nodemon --watch dev -e js dev/networkNode.js 3003 http://localhost:3003",
+    "node_4": "nodemon --watch dev -e js dev/networkNode.js 3004 http://localhost:3004"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/arjun54321/FindX.git"
-  },
-  "author": "Arjun Panwar",
+  "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/arjun54321/FindX/issues"
-  },
-  "homepage": "https://github.com/arjun54321/FindX#readme",
   "dependencies": {
     "axios": "^0.21.1",
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
-    "franc": "^5.0.0",
-    "ibm-watson": "^6.0.2",
-    "langs": "^2.0.0",
+    "nodemon": "^2.0.7",
+    "npm": "^6.14.11",
+    "request": "^2.88.2",
     "request-promise": "^4.2.6",
     "sentiment": "^5.0.2",
-    "stackexchange": "^1.2.2",
-    "uuidv4": "^6.2.6",
-    "zlib": "^1.0.5"
+    "sha256": "^0.2.0",
+    "uuid": "^8.3.2",
+    "ibm-watson": "^6.0.2"
   }
 }

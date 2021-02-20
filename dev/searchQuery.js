@@ -1,10 +1,6 @@
 const express = require("express");
 const searchQueryHelper = require("./searchQueryHelper");
-const bodyParser = require("body-parser");
-const requestPromise = require("request-promise");
-const https = require("https");
-const zlib = require("zlib");
-const { v4: uuidv4 } = require("uuid");
+
 // Watson languageTranslator..........
 const LanguageTranslatorV3 = require("ibm-watson/language-translator/v3");
 const { IamAuthenticator } = require("ibm-watson/auth");
@@ -76,6 +72,6 @@ app.get("/home/:queryString/:questionCount", function (req, res) {
 });
 
 // Define port...................
-app.listen(3000, function () {
-  console.log("App is started on 3000.");
-});
+// app.listen(3000, function () {
+//   console.log("App is started on 3000.");
+// });

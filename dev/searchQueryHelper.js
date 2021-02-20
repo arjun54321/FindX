@@ -14,6 +14,7 @@ var answer_accepted = [];
 var score_answer = [];
 var auth_repo = [];
 var comments_sentiment = [];
+var answer_sentiment = [];
 var index = 0;
 var positive = 0;
 var negative = 0;
@@ -38,9 +39,13 @@ class searchQueryHelper {
       .get(stackOverflowUserURL)
       .then((response) => {
         if (response.status == 200) {
-          self.getStackExchangeData(response.data, function (result) {
-            callback && callback(result);
-          });
+          self.getStackExchangeData(
+            response.data,
+            questionCount,
+            function (result) {
+              callback && callback(result);
+            }
+          );
         } else {
           console.log("Error Occured");
         }
@@ -50,7 +55,7 @@ class searchQueryHelper {
       });
   }
 
-  getStackExchangeData(questionData, callback) {
+  getStackExchangeData(questionData, questionCount, callback) {
     var totalLinks = questionData["items"].length;
 
     questionData["items"].forEach(function (item, index) {
@@ -69,6 +74,69 @@ class searchQueryHelper {
     var self = this;
     self.getStackExchangeQuestionById(function (result) {
       self.sentimentAnalysis(function (result) {
+        var Data = [];
+        var final_data;
+        var final_data_positive = [];
+        var final_data_neutral = [];
+        var final_data_negative = [];
+        var final_data_positive_false = [];
+        var final_data_neutral_false = [];
+        var final_data_negative_false = [];
+
+        //On the basis of Author repo..................
+        var zipped = answer_id.map(function (e, i) {
+          return [e, comments_sentiment[i], answer_accepted[i]];
+        });
+        var sorted = zipped.sort(function (answer_id, auth_repo) {
+          return answer_id[1] - auth_repo[1];
+        });
+        // const arrayColumn = (arr, n) => arr.map((x) => x[n]);
+        // sorted_answer_id_auth_repo = arrayColumn(sorted, 0);
+        // sorted_answer_id_auth_repo.reverse();
+
+        sorted.forEach(function(item){
+          if(item[1] == 'positive' && item[2] == true) {
+            final_data_positive.push(item[0]);
+          }
+          if(item[1] == 'neutral' && item[2] == true) {
+            final_data_neutral.push(item[0]);
+          }
+          if(item[1] == 'negative' && item[2] == true) {
+            final_data_negative.push(item[0]);
+          }
+          if(item[1] == 'positive' && item[2] == false) {
+            final_data_positive_false.push(item[0]);
+          }
+          if(item[1] == 'neutral' && item[2] == false) {
+            final_data_neutral_false.push(item[0]);
+          }
+          if(item[1] == 'negative' && item[2] == false) {
+            final_data_negative_false.push(item[0]);
+          }
+        })
+
+        final_data = final_data_positive.concat(final_data_neutral, final_data_negative, final_data_positive_false, final_data_neutral_false, final_data_negative_false);
+        final_data = final_data.slice(0, parseInt(questionCount));
+
+        for (var k=0; k<final_data.length; k++) {
+          var data = {};
+          for(var i=0; i<result.length; i++) {
+            for(var j=0; j<result[i].answer.length; j++) {
+              if (result[i].answer[j].answer_id == final_data[k]) {
+                data['title'] = result[i].title;
+                data['link'] = result[i].link;
+              }
+            }
+          }
+          Data.push(data);
+        }
+
+        // Remove Duplicates from object..........
+        var jsonObject = Data.map(JSON.stringify);
+        var uniqueSet = new Set(jsonObject);
+        var uniqueArray = Array.from(uniqueSet).map(JSON.parse);
+
+        // Initialize variable length zero......
         questionLink.length = 0;
         questionID.length = 0;
         questionTitle.length = 0;
@@ -81,9 +149,12 @@ class searchQueryHelper {
         score_answer.length = 0;
         auth_repo.length = 0;
         comments_sentiment.length = 0;
+        answer_sentiment.length = 0;
         positive = 0;
         negative = 0;
-        callback(result);
+
+        console.log(result);
+        callback(uniqueArray);
       });
     });
   }
@@ -100,7 +171,6 @@ class searchQueryHelper {
       .then((response) => {
         if (response.status == 200) {
           var result = response.data;
-          // console.log(result);
           console.log(questionID[index] + " => answerid => ");
           for (var i = 0; i < answers_per_question[index]; i++) {
             if (typeof result.items[i] !== "undefined") {
@@ -147,11 +217,10 @@ class searchQueryHelper {
         }
         index++;
         if (questionID.length == index) {
-          // console.log(comments_body);
           index = 0;
           callback();
         } else {
-          console.log("id : " + questionID[index] + ", index : " + index);
+          // console.log("id : " + questionID[index] + ", index : " + index);
           this.getStackExchangeQuestionById(callback);
         }
       })
@@ -163,12 +232,7 @@ class searchQueryHelper {
   sentimentAnalysis(callback) {
     //Sentimental Analysis for answers.............
     var DATA = [];
-    var answer_sentiment = [];
-    var k = 0;
     var jindex = 0;
-    console.log(comments_body.length);
-    console.log(answer_id.length);
-    console.log(comments_sentiment.length);
     for (var i = 0; i < questionLink.length; i++) {
       positive = 0;
       neutral = 0;
