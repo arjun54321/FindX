@@ -1,0 +1,91 @@
+$mobile-width: 480px;
+$tablet-width: 768px;
+$desktop-width: 1024px;
+
+@mixin mobile{
+  @media screen and (max-width: #{$mobile-width}) {
+    @content;
+  }
+}
+
+@mixin mobile-big {
+  @media screen and (max-width: #{$tablet-width - 1px}) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media screen and (max-width: #{$desktop-width}) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media screen and (min-width: #{$desktop-width}) {
+    @content;
+  }
+}
+//breakpoint
+@mixin mquery($size) {
+    @if $size == xlarge {
+        @media only screen and (min-width: 1400px) {
+            @content;
+        }
+    }
+    @if $size == desktop {
+      @media only screen and (min-width: 1024px) {
+          @content;
+      }
+    }
+    @if $size == large {
+      @media only screen and (max-width: 1200px) {
+          @content;
+      }
+    }
+    @if $size == largest {
+      @media only screen and (max-width: 1400px) {
+          @content;
+      }
+    }
+    @if $size == medium {
+        @media only screen and (max-width: 1024px) {
+            @content;
+        }
+    }
+    @if $size == bootMedium {
+        @media only screen and (max-width: 991px) {
+            @content;
+        }
+    }
+    @if $size == tablet {
+        @media only screen and (max-width: 800px) {
+            @content;
+        }
+    }
+    @if $size == mobile {
+        @media only screen and (max-width: 767px) {
+            @content;
+        }
+    }
+    @if $size == small-Medium {
+      @media only screen and (max-width: 560px) {
+          @content;
+      }
+  }
+    @if $size == small {
+        @media only screen and (max-width: 480px) {
+            @content;
+        }
+    }
+    @if $size == xsmall {
+        @media only screen and (max-width: 375px) {
+            @content;
+        }
+    }
+}
+@mixin flex{
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+}

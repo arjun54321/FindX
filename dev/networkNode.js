@@ -13,6 +13,7 @@ const { IamAuthenticator } = require("ibm-watson/auth");
 const nodeAddress = uuidv4()
 const bitcoin = new Blockchain()
 var app = express()
+app.use(express.static(__dirname + '/block-explorer/public'));
 const port = process.argv[2]
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -54,6 +55,38 @@ app.post('/transaction/broadcast', function (req, res) {
 app.get('/mine', function (req, res) {
   const lastBlock = bitcoin.getLastBlock()
   const previousBlockHash = lastBlock['hash']
+
+  var blockchain_answer_id = [];
+  var chain = bitcoin.chain;
+  for(var i=0; i<chain.length; i++) {
+    if(chain[i].transactions.length != false) {
+      var transactions = chain[i].transactions;
+      for(var a=0;a<transactions.length;a++) {
+        var query = transactions[a].queryResult;
+        for(var b=0;b<query.length;b++) {
+          blockchain_answer_id.push(query[b].answer_id);
+        }
+      }
+    }
+  }
+  var data = bitcoin.pendingTransactions;
+  for(var i=0; i<data.length; i++) {
+    if(data[i].queryResult.length != false) {
+      var transactions = data[i].queryResult;
+      for(var j=0; j<transactions.length; j++) {
+        // console.log(transactions[j].answer_id);
+        for(var k=0; k<blockchain_answer_id.length; k++) {
+          if(transactions[j].answer_id == blockchain_answer_id[k]) {
+            console.log(transactions[j].answer_id);
+            transactions.splice(j,1);
+            // break;
+          }
+        }
+      }
+
+    }
+  }
+
   const currentBlockData = {
     transactions: bitcoin.pendingTransactions,
     index: lastBlock['index'] + 1
@@ -76,19 +109,6 @@ app.get('/mine', function (req, res) {
     requestPromises.push(rp(requestOptions))
   })
   Promise.all(requestPromises)
-    // .then(data => {
-    //   const requestOptions = {
-    //     uri: bitcoin.currentNodeUrl + '/transaction/broadcast',
-    //     method: 'POST',
-    //     body: {
-    //       amount: 12.5,
-    //       sender: '00',
-    //       recipient: nodeAddress
-    //     },
-    //     json: true
-    //   }
-    //   return rp(requestOptions)
-    // })
     .then(data => {
       res.json({
         note: 'New block mined & broadcast successfully',
@@ -255,6 +275,10 @@ app.get('/block-explorer', function (req, res) {
   res.sendFile('./block-explorer/index.html', { root: __dirname })
 })
 
+app.get('/home', function (req, res) {
+  res.sendFile('./block-explorer/home.html', { root: __dirname })
+})
+
 // Watson Language Translator API Configuration.....
 const languageTranslator = new LanguageTranslatorV3({
   version: "2018-05-01",
@@ -266,9 +290,10 @@ const languageTranslator = new LanguageTranslatorV3({
 });
 
 // Get input Query value.........
-app.get("/home/:queryString/:questionCount", function (req, res) {
+app.get("/home/:queryString/:questionCount/:questionlanguage", function (req, res) {
   var queryString = req.params.queryString;
   const questionCount = req.params.questionCount;
+  var questionlanguage = req.params.questionlanguage;
   var hostname = req.headers.host;
   var protocol = req.protocol;
   var transactionURL = protocol + "://" + hostname + "/transaction/broadcast";
@@ -292,6 +317,7 @@ app.get("/home/:queryString/:questionCount", function (req, res) {
             searchQuery.stackExchange(
               queryString,
               questionCount,
+              questionlanguage,
               function (result) {
                 axios.post(transactionURL, {
                   queryResult: result,
@@ -319,6 +345,7 @@ app.get("/home/:queryString/:questionCount", function (req, res) {
         searchQuery.stackExchange(
           queryString,
           questionCount,
+          questionlanguage,
           function (result) {
             axios.post(transactionURL, {
               queryResult: result,

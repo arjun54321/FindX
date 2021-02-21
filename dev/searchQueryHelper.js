@@ -20,10 +20,10 @@ var positive = 0;
 var negative = 0;
 var neutral = 0;
 class searchQueryHelper {
-  stackExchange(queryString, questionCount, callback) {
+  stackExchange(queryString, questionCount, questionlanguage, callback) {
     var page_size = parseInt(questionCount) + 10;
-    const query = queryString.toString();
-    const tagged = "javascript";
+    const query = queryString.toString() + " in " + questionlanguage;
+    const tagged = questionlanguage;
     var stackOverflowUserURL =
       "https://api.stackexchange.com/2.2/similar?key=" +
       Auth_key +
@@ -125,6 +125,7 @@ class searchQueryHelper {
               if (result[i].answer[j].answer_id == final_data[k]) {
                 data['title'] = result[i].title;
                 data['link'] = result[i].link;
+                data['answer_id'] = result[i].answer[j].answer_id;
               }
             }
           }

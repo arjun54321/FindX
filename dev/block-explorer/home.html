@@ -1,0 +1,247 @@
+<html>
+    <head>
+        <title>Terminators</title>
+        <link rel="stylesheet" type="text/css" href="/css/style.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"> -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+        <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script> -->
+
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+      <div class="wrapper">
+      <header><div class="row"><div class="col-sm-12">FindX</div></div></header>
+      </div>
+      <div class="query-enter">
+          <div class="row">
+
+              <div class="col-sm-6">
+                <div class="form-outline">
+                    <input type="search" id="form1" class="form-control" placeholder="Type Your Query Here"
+                    aria-label="Search" />
+                  </div>
+              </div>
+              <div class="col-sm-6"><select placeholder="Choose a Language..." class="select-language">
+                <option value="" selected hidden>Choose a language</option>
+                <option></option>
+            </select></div>
+
+          </div>
+          <div class="row">
+            <div class="col-sm-2">
+              <button id="mine">Mine New Block</button>
+              <div class="spinner-border text-success" id="loader" style="display:none;" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+            </div>
+            <div class="col-sm-2">
+              <button id="register_node">Register Node to network</button>
+            </div>
+            <div class="col-sm-2">
+              <button id="consensus">Consensus</button>
+            </div>
+            <div class="col-sm-6">
+              <div class="canvas_preview_details">
+                <div class="details">
+                  <span>1</span>
+                </div>
+                <input type="range" id="answer_count" name="answer_count" min="1" max="20" step="1" value="1">
+              </div>
+          </div>
+          </div>
+      </div>
+      <div class="pending" style="background-color:rgb(218, 19, 19);min-height:400px;width:50%;float:left;">
+      </div>
+      <div class="blockchain" style="background-color:rgb(26, 152, 202);min-height:400px;width:50%;float:left;">
+      </div>
+      <script>
+        $('document').ready(function(){
+          var baseUrl = window.location.origin;
+          var protocol = window.location.protocol;
+          var domain = window.location.hostname;
+          var port = window.location.port;
+          var answer_count = document.getElementById("answer_count");
+
+          blockchain();
+
+          // Hit StackOverflow API........
+          var input = document.getElementById("form1");
+            input.addEventListener("keyup", function(event) {
+            if (event.keyCode === 13) {
+              if(validate(this.value)) {
+                var questionlanguage =  jQuery('.select2-selection__rendered').text();
+                console.log(questionlanguage);
+                var stackAPI = baseUrl + "/home/" + this.value + "/" + parseInt(answer_count.value) + "/" + questionlanguage;
+                $.ajax({
+                  url: stackAPI,
+                  type: 'GET',
+                  dataType: 'json', // added data type
+                  beforeSend: function(){
+                    // Show image container
+                    $("#loader").show();
+                  },
+                  success: function(res) {
+                    var data =res.data;
+                    for(var i=0;i<data.length;i++) {
+                      var title = data[i].title;
+                      var link = data[i].link;
+                      jQuery('.pending').append('<div class="blocks" style="color: green;"><a href="'+ link +'" target="_blank" style="color:white;">'+ title +'</a></div>');
+                    }
+                  },
+                  complete:function(data){
+                    // Hide image container
+                    $("#loader").hide();
+                  }
+                });
+              }
+            }
+          });
+
+          // Get Blockchain Data......
+          function blockchain() {
+            var blockchainApi = baseUrl + "/blockchain";
+            $.ajax({
+              url: blockchainApi,
+              type: 'GET',
+              dataType: 'json', // added data type
+              success: function(res) {
+                var chain = res.chain;
+                for(var i=0; i<chain.length; i++) {
+                  if(chain[i].transactions.length != false) {
+                    var transactions = chain[i].transactions;
+                    for(var a=0;a<transactions.length;a++) {
+                      var query = transactions[a].queryResult;
+                      for(var b=0;b<query.length;b++) {
+                        var title = query[b].title;
+                        var link = query[b].link;
+                        jQuery('.blockchain').append('<div class="block"><a href="'+ link +'" target="_blank" style="color:white;">'+ title +'</a></div>');
+                      }
+                    }
+                  }
+                }
+              }
+            });
+          }
+
+          // Mine New Block......
+          document.getElementById("mine").onclick = function() {
+            var mineApi = baseUrl + "/mine";
+            $.ajax({
+              url: mineApi,
+              type: 'GET',
+              dataType: 'json', // added data type
+              beforeSend: function(){
+                  // Show image container
+                  $("#loader").show();
+              },
+              success: function(res) {
+                $('.blockchain').empty();
+                blockchain();
+                console.log("Block Mined Successfully!");
+              },
+              complete:function(data){
+                  // Hide image container
+                  $("#loader").hide();
+              }
+            });
+          }
+
+          // Register New Node to Blockchain Network......
+          document.getElementById("register_node").onclick = function() {
+            var rootNodeUrl = protocol + "//" + domain + ":3000"
+            var registerNode = rootNodeUrl + "/register-and-broadcast-node";
+            $.ajax({
+              url: registerNode,
+              type: 'POST',
+              dataType: 'json', // added data type
+              data: {"newNodeUrl": baseUrl},
+              beforeSend: function(){
+                  // Show image container
+                  $("#loader").show();
+              },
+              success: function(res) {
+                $('.blockchain').empty();
+                blockchain();
+                console.log("Node Registered To Blockchain Network Successfully!");
+              },
+              complete:function(data){
+                  // Hide image container
+                  $("#loader").hide();
+              }
+            });
+          }
+
+          // Consensus......
+          document.getElementById("consensus").onclick = function() {
+            var consensus = baseUrl + "/consensus";
+            $.ajax({
+              url: consensus,
+              type: 'GET',
+              dataType: 'json', // added data type
+              beforeSend: function(){
+                  // Show image container
+                  $("#loader").show();
+              },
+              success: function(res) {
+                $('.blockchain').empty();
+                blockchain();
+                console.log("Chain Validated Successfully!");
+              },
+              complete:function(data){
+                  // Hide image container
+                  $("#loader").hide();
+              }
+            });
+          }
+
+          // Insert languages....
+          var languages = [
+            "C","C++","Java","Python","Ruby","JS","Pascal","R"
+          ];
+          $('.select-language').select2({
+            data:languages
+          })
+
+          // Change Question Count.....
+          var listener = function() {
+            window.requestAnimationFrame(function() {
+              document.querySelector(".details > span").innerHTML = answer_count.value;
+            });
+          };
+          answer_count.addEventListener("mousedown", function() {
+            listener();
+            answer_count.addEventListener("mousemove", listener);
+          });
+          answer_count.addEventListener("mouseup", function() {
+            answer_count.removeEventListener("mousemove", listener);
+          });
+          answer_count.addEventListener("keydown", listener);
+
+          // Validation........
+          function validate(value) {
+            if(!value) {
+              alert('Please Type a Query');
+              return false;
+            }
+            else if(jQuery('.select2-selection__rendered').text()=="Choose a language") {
+              alert('Please Select a Language');
+              return false;
+            }
+            else {
+              return true;
+            }
+          }
+
+        });
+      </script>
+      <script>
+
+      </script>
+    </body>
+</html>
