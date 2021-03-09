@@ -1,0 +1,95 @@
+/*css for second page starts here */
+body {
+    background: url(../images/img.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+#page-title a{
+  color: #fff;
+  text-decoration: none;
+  text-align: center;
+  padding: 30px 0px;
+  font: 62px "MuseoSans-300", Open Sans;
+}
+.form-group input
+{
+   background: transparent!important;
+   border: 2px solid aqua !important;
+   border-radius: 10px;
+   margin: 20px 0px !important;
+   padding: 15px !important;
+   color: #fff !important;
+   font: 22px "MuseoSans-700", Open Sans !important;
+}
+.form-group input::placeholder
+{
+   color: #fff !important;
+   font: 22px "MuseoSans-700", Open Sans !important;
+}
+.form-control
+{   padding: 15px !important;  
+    margin: 20px 0px !important;
+    color: #fff !important;
+    background-color: transparent !important;
+    background-clip: padding-box ;
+    border: 2px solid aqua !important;
+    border-radius: 10px !important;
+    font: 22px "MuseoSans-700", Open Sans !important;
+    min-height: 56px;
+}
+.form-control option
+{
+    background:rgba(56, 131, 131, 0.699) !important;
+    color: black !important;
+    font: 22px "MuseoSans-700", Open Sans !important;
+}    
+button.btn.btn-primary.margin-auto.btn-search {
+    background: transparent;
+    border: 2px solid aqua;
+    border-radius: 10px;
+    padding: 20px;
+    font: 22px "MuseoSans-700", Open Sans !important;
+    color: #fff;
+    width: 35%;
+}   
+button.btn.btn-primary.margin-auto.btn-search:hover{
+    background-color: aqua !important;
+    color: black!important;
+} 
+table.table-striped.ng-scope
+{
+    background:transparent !important;
+    border: 2px solid aqua !important;
+    border-radius:40px !important;
+    padding: 20px!important;
+    border-spacing: 10px;
+    border-collapse: separate;
+}
+table.table-striped.ng-scope tr{
+word-break: break-all;
+}
+table.table-striped.ng-scope tr td
+{
+    padding:10px !important;
+  }
+  table.table-striped.ng-scope tr .bold
+{
+    font: 30px "MuseoSans-700", Open Sans !important;
+    color:white !important;
+    line-height: 40px !important;
+    font-weight:bold !important;
+}
+table.table-striped.ng-scope tr .ng-binding
+{
+    font: 30px "MuseoSans-300", Open Sans !important;
+    color:white !important;
+    line-height: 40px !important;
+}
+table.table-striped.ng-scope tr td  a.ng-binding{
+    text-decoration: none !important;
+    cursor: pointer !important;
+}
+.table-title.ng-scope{
+    font: 50px "MuseoSans-700", Open Sans !important;
+    color:white !important;
+}

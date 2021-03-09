@@ -1,0 +1,277 @@
+body {
+  background: url(../images/img.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.wrapper {
+  width: 100%;
+}
+
+.row {
+  margin: 0px !important;
+}
+
+header {
+  text-align: center;
+  padding: 30px 0px;
+  font: 62px "MuseoSans-300", Open Sans;
+  color: #fff;
+}
+header a{
+  color:white;
+  text-decoration:none;
+}
+header a:hover{
+  color:white;
+  text-decoration:none;
+}
+
+.query-enter {
+  padding: 40px 20px;
+}
+
+.query-enter .heading {
+  background: transparent;
+  background-color: #b3e1e8de;
+  padding: 10px;
+  font-size: 20px;
+  border-radius: 10px;
+  text-align: center;
+  font: 30px "MuseoSans-500", Open Sans;
+  color: black;
+}
+
+.query-enter .form-outline .form-control {
+  padding: 20px;
+  border-radius: 10px;
+  border-color: aqua;
+  background: rgba(27, 40, 53, 0.1);
+  color: #fff;
+  font: 22px "MuseoSans-500", Open Sans;
+}
+
+.query-enter .form-outline .form-control::placeholder {
+  color: #fff;
+  font: 22px "MuseoSans-500", Open Sans;
+}
+
+.query-enter .select-language {
+  width: 100%;
+  padding: 7px;
+  border-radius: 8px;
+  border-color: aqua;
+  background: rgba(27, 40, 53, 0.1);
+  color: #fff;
+  font: 22px "MuseoSans-700", Open Sans;
+}
+
+.query-enter .select-language option {
+  background-color: #0a3e64;
+  font: 22px "MuseoSans-700", Open Sans;
+}
+
+.query-enter .submit {
+  width: 100%;
+  border-radius: 10px;
+  padding: 10px;
+  background: #0a3e64;
+  border-color: aqua;
+  color: #fff;
+  font: 22px "MuseoSans-700", Open Sans;
+}
+
+.query-enter .selection .select2-selection.select2-selection--single {
+  height: 42px !important;
+  border-radius: 11px;
+  padding-top: 6px;
+  font-size: 20px;
+  background: transparent;
+  border-color: aqua;
+}
+.query-enter .selection .select2-selection.select2-selection--single:hover {
+  border-radius: 11px;
+  padding-top: 6px;
+  font-size: 20px;
+  background: transparent;
+  border-color: aqua;
+}
+.query-enter .selection .select2-selection.select2-selection--single:active {
+  border-radius: 11px;
+  padding-top: 6px;
+  font-size: 20px;
+  background: transparent;
+  border-color: aqua;
+}
+.select2-selection__rendered {
+  color: white !important;
+}
+.select2-dropdown .select2-results ul li:first-child
+{
+ background:transparent !important;
+}
+.select2{
+  background:transparent;
+}
+.select2-dropdown{
+  background: transparent !important;
+}
+.select2-results ul{
+  color:white;
+  font-size: 20px;
+}
+.select2-selection__rendered .select2-selection__placeholder{
+color:white !important;
+}
+button#mine {
+  margin-top: 20px;
+  background-color: transparent;
+  border-radius: 17px;
+  color: #fff;
+  padding: 22px;
+  border: 2px solid aqua;
+  width: 180px;
+}
+button#mine:hover{
+    background-color: aqua;
+    color:black !important;
+    width: 180px;
+  }  
+  button#register_node:hover{
+    background-color: aqua;
+    color: #000 !important;
+    width: 180px;
+  }
+  .query-enter .selection .select2-selection.select2-selection--single {
+    height: 46px !important;
+    border-radius: 11px;
+    padding-top: 6px;
+    font-size: 20px;
+    background: transparent;
+    border-color: aqua;}
+button#register_node {
+    margin-top: 20px;
+    background: transparent;
+    border: 2px solid aqua;
+    border-radius: 20px;
+    color: #fff;
+    padding: 9px;
+    width: 180px;
+  }
+button#consensus {
+      margin-top: 20px;
+      padding: 21px;
+      background: transparent;
+      border: 2px solid aqua;
+      border-radius: 21px;
+      color: #fff;
+      width: 180px;
+  } 
+  button#consensus:hover{
+    background-color: aqua;
+    color: black!important;
+    width: 180px;
+  }  
+.canvas_preview_details{
+  margin-top: 15px;
+}
+.canvas_preview_details .details {
+    color: aqua;
+    font-size: 30px;
+    margin-bottom: 5px;
+  }  
+  .pending{
+    display:  flex;
+    flex-wrap: wrap;
+  }
+  .pending .blocks {
+    width:30%;
+    margin:2% 1%;
+    border:2px solid aqua;
+    font:18px "MuseoSans-300", Open Sans;
+    border-radius: 17px;
+    padding: 20px;
+    height: 120px;
+    line-height: 20px;
+  } 
+  .pending .blocks:hover
+  { 
+    cursor: pointer;
+    background-color: aqua;
+    color: black !important;
+  }
+  .pending .blocks:hover a{
+    color: black !important;
+  }
+ 
+ #answer_count{
+   width:100%;
+ }
+ .canvas_preview_details .details{
+   text-align: center;
+ }
+  .pending .blocks a{
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .blockchain{
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .blockchain .block{
+    margin:2% 2%;
+    border:2px solid aqua;
+    font:18px "MuseoSans-300", Open Sans;
+    border-radius: 17px;
+    padding: 20px;
+    height: 85px;
+    line-height: 20px;
+    width:21%;
+    height:114px;
+  }
+  .blockchain .block a{
+    text-decoration: none;
+    font:18px "MuseoSans-300", Open Sans;
+    cursor: pointer;
+  }
+  .blockchain .block:hover
+  {
+    transform-style: preserve-3d;
+    transform: scale(1.15);
+    cursor: pointer;
+    background-color: aqua;
+    box-shadow: 2px 2px 2px 2px solid skyblue;
+  }
+  .blockchain .block:hover a{
+    color:#000 !important;
+  }
+  #loader{
+    margin-left: 50%;
+    color: aqua !important;
+    font-size: 100px;
+  }
+  .modal{
+    margin-top: 75px;
+  }
+  .modal-dialog{
+    margin-top: 172px;
+    max-width: 900px !important;
+    overflow-y: initial !important;
+  }
+  .modal-header{
+    border-bottom:0px !important;
+  }
+.modal-content{
+  background: rgba(27, 40, 53, 0.9) !important;
+  height: 500px;
+}
+.modal-body{
+    height: 80vh;
+    overflow-y: auto;
+}
+.select2-selection__arrow{
+  display: none;
+}
+/* No files to import found in fonts/**\/* */
+
+/*# sourceMappingURL=style.css.map */

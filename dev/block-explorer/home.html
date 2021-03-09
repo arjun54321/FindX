@@ -1,0 +1,347 @@
+<html>
+    <head>
+        <title>Terminators</title>
+        <link rel="stylesheet" type="text/css" href="/css/style.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"> -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+      <div class="wrapper">
+      <header><div class="row"><div class="col-sm-12"><a href="/block-explorer">FindX</a></div></div></header>
+      </div>
+      <div class="query-enter">
+          <div class="row">
+
+              <div class="col-sm-6">
+                <div class="form-outline">
+                    <input type="search" id="form1" class="form-control" placeholder="Type Your Query Here"
+                    aria-label="Search" />
+                  </div>
+              </div>
+              <div class="col-sm-6">
+                <select placeholder="Choose a Language..." class="select-language" id="select-language">
+                <option></option>
+            </select>
+          </div>
+
+          </div>
+          <div class="row">
+            <div class="col-sm-2">
+              <button id="mine">Mine New Block</button>
+            </div>
+            <div class="col-sm-2">
+              <button id="register_node">Register Node to network</button>
+            </div>
+            <div class="col-sm-2">
+              <button id="consensus">Validate The Node</button>
+            </div>
+            <div class="col-sm-6">
+              <div class="canvas_preview_details">
+                <div class="details">
+                  <span>1</span>
+                </div>
+                <input type="range" id="answer_count" name="answer_count" min="1" max="20" step="1" value="1">
+              </div>
+          </div>
+          </div>
+      </div>
+      <div class="spinner-border text-success" id="loader" style="display:none;" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+      <!-- modal Starts -->
+      <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+              <div class="pending">
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+          <!-- modal Ends -->
+
+      <div class="blockchain">
+      </div>
+      <script>
+        $('document').ready(function(){
+          var baseUrl = window.location.origin;
+          var protocol = window.location.protocol;
+          var domain = window.location.hostname;
+          var port = window.location.port;
+          var answer_count = document.getElementById("answer_count");
+
+          blockchain();
+
+          // Hit StackOverflow API........
+          var input = document.getElementById("form1");
+          var selected = document.getElementById("select-language");
+            input.addEventListener("keyup", function(event){
+              if (event.keyCode === 13) {
+                StackAPI(this.value)
+              }
+            });
+            $("#answer_count").change(function(){
+              StackAPI(this.value);
+            });
+            $('#select-language').on("select2:select", function(e) {
+              var value = e.params.data;
+              StackAPI(value.text);
+              });
+            function StackAPI(value) {
+              var input = validate();
+              if(input=="Please Wait While Your Output is being Processed") {
+                jQuery('.pending').empty();
+                var questionlanguage =  jQuery('.select2-selection__rendered').text();
+                var value = jQuery('#form1').val();
+                var questionlanguage = questionlanguage.substring(1);
+                console.log(questionlanguage);
+                var stackAPI = baseUrl + "/home/" + value + "/" + parseInt(answer_count.value) + "/" + questionlanguage;
+                $.ajax({
+                  url: stackAPI,
+                  type: 'GET',
+                  dataType: 'json', // added data type
+                  beforeSend: function(){
+                    // Show image container
+                    $("#loader").show();
+                  },
+                  success: function(res) {
+                    $('#myModal').modal('show');
+                    var data =res.data;
+                    for(var i=0;i<data.length;i++) {
+                      var title = data[i].title;
+                      var link = data[i].link;
+                      jQuery('.pending').append('<div class="blocks" style="color: green;"><a href="'+ link +'" target="_blank" style="color:white;">'+ title +'</a></div>');
+                    }
+                  },
+                  complete:function(data){
+                    // Hide image container
+                    $("#loader").hide();
+                  }
+                });
+              }
+          }
+
+          // Get Blockchain Data......
+          function blockchain() {
+            var blockchainApi = baseUrl + "/blockchain";
+            $.ajax({
+              url: blockchainApi,
+              type: 'GET',
+              dataType: 'json', // added data type
+              success: function(res) {
+                var chain = res.chain;
+                for(var i=0; i<chain.length; i++) {
+                  if(chain[i].transactions.length != false) {
+                    var transactions = chain[i].transactions;
+                    for(var a=0;a<transactions.length;a++) {
+                      var query = transactions[a].queryResult;
+                      for(var b=0;b<query.length;b++) {
+                        var title = query[b].title;
+                        var link = query[b].link;
+                        jQuery('.blockchain').append('<div class="block"><a href="'+ link +'" target="_blank" style="color:white;">'+ title +'</a></div>');
+                      }
+                    }
+                  }
+                }
+              }
+            });
+          }
+
+          // Mine New Block......
+          document.getElementById("mine").onclick = function() {
+            var mineApi = baseUrl + "/mine";
+            $.ajax({
+              url: mineApi,
+              type: 'GET',
+              dataType: 'json', // added data type
+              beforeSend: function(){
+                  // Show image container
+                  $("#loader").show();
+                  var synth = window.speechSynthesis;
+                  var voices = [];
+                  voices = synth.getVoices();
+                  var toSpeak = new SpeechSynthesisUtterance("Block Is Mining");
+                  var selectedVoiceName = "Google हिन्दी";
+                  voices.forEach((voice)=>{
+                      if(voice.name === selectedVoiceName){
+                          toSpeak.voice = voice;
+                      }
+            });
+            synth.speak(toSpeak);
+              },
+              success: function(res) {
+                $('.blockchain').empty();
+                blockchain();
+                console.log("Block Mined Successfully!");
+              },
+              complete:function(data){
+                  // Hide image container
+                  $("#loader").hide();
+              }
+            });
+          }
+
+          // Register New Node to Blockchain Network......
+          document.getElementById("register_node").onclick = function() {
+            var rootNodeUrl = protocol + "//" + domain + ":3000"
+            var registerNode = rootNodeUrl + "/register-and-broadcast-node";
+            $.ajax({
+              url: registerNode,
+              type: 'POST',
+              dataType: 'json', // added data type
+              data: {"newNodeUrl": baseUrl},
+              beforeSend: function(){
+                  // Show image container
+                  $("#loader").show();
+                  var synth = window.speechSynthesis;
+                  var voices = [];
+                  voices = synth.getVoices();
+                  var toSpeak = new SpeechSynthesisUtterance("Registering Node To Network");
+                  var selectedVoiceName = "Google हिन्दी";
+                  voices.forEach((voice)=>{
+                      if(voice.name === selectedVoiceName){
+                          toSpeak.voice = voice;
+                      }
+            });
+            synth.speak(toSpeak);
+              },
+              success: function(res) {
+                $('.blockchain').empty();
+                blockchain();
+                console.log("Node Registered To Blockchain Network Successfully!");
+              },
+              complete:function(data){
+                  // Hide image container
+                  $("#loader").hide();
+              }
+            });
+          }
+
+          // Consensus......
+          document.getElementById("consensus").onclick = function() {
+            var consensus = baseUrl + "/consensus";
+            $.ajax({
+              url: consensus,
+              type: 'GET',
+              dataType: 'json', // added data type
+              beforeSend: function(){
+                  // Show image container
+                  $("#loader").show();
+                  var synth = window.speechSynthesis;
+                  var voices = [];
+                  voices = synth.getVoices();
+                  var toSpeak = new SpeechSynthesisUtterance("Vaidating The Node");
+                  var selectedVoiceName = "Google हिन्दी";
+                  voices.forEach((voice)=>{
+                      if(voice.name === selectedVoiceName){
+                          toSpeak.voice = voice;
+                      }
+            });
+            synth.speak(toSpeak);
+              },
+              success: function(res) {
+                $('.blockchain').empty();
+                blockchain();
+                console.log("Chain Validated Successfully!");
+              },
+              complete:function(data){
+                  // Hide image container
+                  $("#loader").hide();
+              }
+            });
+          }
+
+           // Insert languages....
+           var languages = [
+            "javascript","java","python","c#","php","android","html","jquery","c++","css","ios","mysql","sql","r","node.js","asp.net","arrays","c","ruby-on-rails","json",".net","sql-server","objective-c","swift","reactjs","python-3.x","angularjs","django","angular","excel","regex","iphone","ruby","ajax","linux","xml"
+          ];
+          $('.select-language').select2({
+            data:languages,
+            placeholder: "Select A Language",
+            allowClear: true
+          })
+
+          // Change Question Count.....
+          var listener = function() {
+            window.requestAnimationFrame(function() {
+              document.querySelector(".details > span").innerHTML = answer_count.value;
+            });
+          };
+          answer_count.addEventListener("mousedown", function() {
+            listener();
+            answer_count.addEventListener("mousemove", listener);
+          });
+          answer_count.addEventListener("mouseup", function() {
+            answer_count.removeEventListener("mousemove", listener);
+          });
+          answer_count.addEventListener("keydown", listener);
+
+          // Validation........
+          function validate() {
+            if(!jQuery('#form1').val()) {
+              var errorInput = "Please Enter A Query";
+            }
+            else if(jQuery('.select2-selection__rendered span').text()=="Select A Language") {
+              var errorInput = "Please Select a Language";
+            }
+            else {
+              var errorInput = "Please Wait While Your Output is being Processed";
+            }
+             voice_message(errorInput);
+            return errorInput;
+          }
+
+          //voice command...........
+          function voice_message(txtInput){
+            var synth = window.speechSynthesis;
+            var voices = [];
+            voices = synth.getVoices();
+            var toSpeak = new SpeechSynthesisUtterance(txtInput);
+            var selectedVoiceName = "Google हिन्दी";
+            voices.forEach((voice)=>{
+                if(voice.name === selectedVoiceName){
+                    toSpeak.voice = voice;
+                }
+            });
+            synth.speak(toSpeak);
+          }
+          $(".pending .blocks").click(function(){
+            window.location=$(this).find("a").attr("href");
+            return false;
+          });
+          $(".blockchain .block").click(function(){
+              window.location=$(this).find("a").attr("href");
+              return false;
+          });
+          jQuery('.query-enter .select2 .selection .select2-selection').click(function(){
+            if(jQuery('.query-enter .select2 .selection .select2-selection').attr('aria-expanded')=="true")
+            {
+              jQuery('.query-enter .row .canvas_preview_details').parent().addClass('range');
+              jQuery('.query-enter .row .range').removeClass('col-sm-6').addClass('col-sm-12');
+              jQuery('.query-enter .row .canvas_preview_details').css("width","50%");
+            }
+            else{
+              jQuery('.query-enter .row .canvas_preview_details').parent().removeClass('range');
+              jQuery('.query-enter .row .canvas_preview_details').parent().removeClass('col-sm-12').addClass('col-sm-6');
+              jQuery('.query-enter .row .canvas_preview_details').css("width","100%");
+            }
+            });
+
+        });
+      </script>
+    </body>
+</html>
